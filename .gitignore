@@ -1,0 +1,16 @@
+node_modules/
+client/dist/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+server/.env
+server/storage/
+server/.cache/
+backups/
+coverage/
+*.log
+.local/

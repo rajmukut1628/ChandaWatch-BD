@@ -1,0 +1,29 @@
+{
+  "name": "chandawatch-bd",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "npm run build -w client",
+    "start": "npm run start -w server",
+    "test": "npm run test -w server",
+    "check": "npm run build && npm test",
+    "setup": "node scripts/setup.mjs",
+    "bootstrap": "npm run bootstrap -w server",
+    "backup": "npm run backup -w server",
+    "retention": "npm run retention -w server",
+    "format": "prettier --write client/src server/src server/scripts server/test scripts docs *.json *.md *.yaml client/*.js .github/workflows"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@babel/parser": "^7.29.9",
+    "esbuild": "^0.28.2",
+    "prettier": "^3.9.9"
+  }
+}

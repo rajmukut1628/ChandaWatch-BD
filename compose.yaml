@@ -1,0 +1,47 @@
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: server/.env
+    environment:
+      NODE_ENV: production
+      MONGODB_URI: ${MONGODB_URI:?Set authenticated MongoDB Atlas URI in environment}
+      APP_ORIGIN: ${APP_ORIGIN:?Set public HTTPS origin in environment}
+      FIELD_ENCRYPTION_KEY: ${FIELD_ENCRYPTION_KEY:?Set field encryption key}
+      AUDIT_KEY: ${AUDIT_KEY:?Set audit integrity key}
+      BACKUP_ENCRYPTION_KEY: ${BACKUP_ENCRYPTION_KEY:-}
+      BACKUP_SCHEDULE_ENABLED: ${BACKUP_SCHEDULE_ENABLED:-true}
+      RETENTION_SCHEDULE_ENABLED: ${RETENTION_SCHEDULE_ENABLED:-true}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_FROM: ${SMTP_FROM:-}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      REPORTING_ENABLED: ${REPORTING_ENABLED:-false}
+      PUBLIC_LAUNCH_APPROVED: ${PUBLIC_LAUNCH_APPROVED:-false}
+      SCANNER_MODE: clamav
+      CLAMAV_HOST: scanner
+    ports:
+      - "127.0.0.1:4000:4000"
+    volumes:
+      - evidence:/app/server/storage
+      - backups:/app/server/backups
+    depends_on:
+      - scanner
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+  scanner:
+    image: clamav/clamav:stable
+    restart: unless-stopped
+    volumes:
+      - signatures:/var/lib/clamav
+      - ./server/clamd.conf:/etc/clamav/clamd.conf:ro
+    expose:
+      - "3310"
+volumes:
+  evidence:
+  backups:
+  signatures:
